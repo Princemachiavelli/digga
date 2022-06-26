@@ -15,10 +15,9 @@
   system = pkgs.system;
 
   mkPortableHomeManagerConfiguration = {
-    username,
-    configuration,
-    pkgs,
-    system ? pkgs.system,
+      username,
+      configuration,
+      pkgs
   }: let
     homeDirectoryPrefix =
       if pkgs.stdenv.hostPlatform.isDarwin
@@ -27,27 +26,29 @@
     homeDirectory = "${homeDirectoryPrefix}/${username}";
   in
     home-manager.lib.homeManagerConfiguration {
-      inherit username homeDirectory pkgs system;
+      inherit pkgs;
 
-      extraModules = config.home.modules ++ config.home.exportedModules;
-      extraSpecialArgs = config.home.importables // {inherit self inputs;};
+      extraSpecialArgs = config.home.importables // { inherit self inputs; };
 
-      configuration =
-        {
-          imports = [configuration];
-        }
-        // (
-          if (pkgs.stdenv.hostPlatform.isLinux && !pkgs.stdenv.buildPlatform.isDarwin)
-          then {targets.genericLinux.enable = true;}
-          else {}
-        );
+      modules = [ configuration
+                  {
+                    home = {
+                      inherit username homeDirectory;
+                      stateVersion = "22.11";
+                    };
+                  }
+                ] ++ config.home.exportedModules
+                  ++ config.home.modules
+                  ++ lib.optionals (pkgs.stdenv.hostPlatform.isLinux && !pkgs.stdenv.buildPlatform.isDarwin)
+                  [
+                    {targets.genericLinux.enable = true;}
+                  ];
     };
 
   homeConfigurationsPortable =
     builtins.mapAttrs
-    (n: v:
-      mkPortableHomeManagerConfiguration {
-        inherit pkgs system;
+      (n: v: mkPortableHomeManagerConfiguration {
+        inherit pkgs;
         username = n;
         configuration = v;
       })
