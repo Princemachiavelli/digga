@@ -15,9 +15,9 @@
   system = pkgs.system;
 
   mkPortableHomeManagerConfiguration = {
-      username,
-      configuration,
-      pkgs
+    username,
+    configuration,
+    pkgs,
   }: let
     homeDirectoryPrefix =
       if pkgs.stdenv.hostPlatform.isDarwin
@@ -47,7 +47,8 @@
 
   homeConfigurationsPortable =
     builtins.mapAttrs
-      (n: v: mkPortableHomeManagerConfiguration {
+    (n: v:
+      mkPortableHomeManagerConfiguration {
         inherit pkgs;
         username = n;
         configuration = v;
