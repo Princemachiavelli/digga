@@ -5,31 +5,33 @@
   nixConfig.extra-substituters = "https://nrdxp.cachix.org https://nix-community.cachix.org";
   nixConfig.extra-trusted-public-keys = "nrdxp.cachix.org-1:Fc5PSqY2Jm1TrWfm88l6cvGWwz3s93c6IOifQWnhNW4= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
 
-  inputs = {
-    # Track channels with commits tested and built by hydra
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs =
+    {
+      nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
+      latest.url = "github:nixos/nixpkgs/nixos-unstable";
+      nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+      nixlib.url = "github:nix-community/nixpkgs.lib";
 
-    nixlib.url = "github:nix-community/nixpkgs.lib";
 
-    deploy.url = "github:serokell/deploy-rs";
-    deploy.inputs.nixpkgs.follows = "nixpkgs";
+      deploy.url = "github:serokell/deploy-rs";
+      deploy.inputs.nixpkgs.follows = "nixpkgs";
 
-    home-manager.url = "github:nix-community/home-manager/release-22.05";
-    home-manager.inputs.nixpkgs.follows = "nixlib";
+      home-manager.url = "github:nix-community/home-manager/release-22.11";
+      home-manager.inputs.nixpkgs.follows = "nixlib";
+      home-manager.inputs.utils.follows = "flake-utils-plus/flake-utils";
 
-    darwin.url = "github:LnL7/nix-darwin";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
+      darwin.url = "github:LnL7/nix-darwin";
+      darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    devshell.url = "github:numtide/devshell";
-    devshell.inputs.nixpkgs.follows = "nixpkgs";
+      devshell.url = "github:numtide/devshell";
+      devshell.inputs.nixpkgs.follows = "nixpkgs";
 
-    flake-utils-plus.url = "github:gytis-ivaskevicius/flake-utils-plus/?ref=refs/pull/120/head";
+      flake-utils-plus.url = "github:gytis-ivaskevicius/flake-utils-plus/?ref=refs/pull/120/head";
 
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
+      flake-compat = {
+        url = "github:edolstra/flake-compat";
+        flake = false;
+      };
   };
 
   outputs = {
