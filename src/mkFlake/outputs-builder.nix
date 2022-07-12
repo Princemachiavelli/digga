@@ -25,7 +25,6 @@ let
                   {
                     home = {
                       inherit username homeDirectory;
-                      stateVersion = "22.11";
                     };
                   }
                 ] ++ config.home.exportedModules
